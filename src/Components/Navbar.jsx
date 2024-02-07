@@ -8,7 +8,7 @@ const Navbar = () => {
   }
   const navItems = [
     { path: '/', title: 'About' },
-    { path: '/role', title: 'Pick A Role' },
+    { path: '/mynotes', title: 'Create A Post' },
     { path: '/my-roles', title: 'Profile' },
     { path: '/community', title: 'Communities' },
     { path: '/post-job', title: 'Roadmap Request' },
@@ -16,6 +16,7 @@ const Navbar = () => {
 
   return (
     <header className="max-w-screen-2xl container mx-auto xl:px-24 px-4 ">
+      
       <nav className="flex justify-between items-center py-6">
         <a href="/" className="flex items-center gap-2 text-2xl text-black">
           <svg
@@ -168,6 +169,7 @@ const Navbar = () => {
               >
                 {title}
               </NavLink>
+              
             </li>
           ))}
         </ul>
@@ -197,13 +199,13 @@ const Navbar = () => {
       </nav>
       {/* navItems FOR MOB */}
       <div
-        className={`nav_mob  p-6 bg-primary text-slate-50 md:hidden block  rounded-lg  ${
+        className={`nav_mob  p-5  bg-primary text-xl text-slate-50 md:hidden block  rounded-lg  ${
           isMenuOpen ? '' : 'hidden'
         }`}
       >
         {isMenuOpen
           ? navItems.map(({ path, title }) => (
-              <li className="" key={path}>
+              <li className="mb-2" key={path}>
                 <NavLink
                   to={path}
                   className={({ isActive }) => (isActive ? 'active' : '')}

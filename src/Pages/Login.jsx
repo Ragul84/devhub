@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState } from 'react'
+import { useState, createContext, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -25,7 +25,7 @@ const AlertBox = ({ showAlert, handleCloseAlert }) =>
       </button>
     </div>
   )
-   
+
 const AccountAlert = ({ noAccountAlert, handleCloseAlertAccount }) => {
   return (
     noAccountAlert && (
@@ -41,16 +41,28 @@ const AccountAlert = ({ noAccountAlert, handleCloseAlertAccount }) => {
         </button>
       </div>
     )
-  );
-};
+  )
+}
+/*
+export const MyContext = createContext()
 
+export const MyProvider = ({ children }) => {
+  const [token, setToken] = useState('')
 
+  return (
+    <MyContext.Provider value={{ token, setToken }}>
+      {children}
+    </MyContext.Provider>
+  )
+}
+*/
 const Login = () => {
   const [password, setPassword] = useState()
-  const [mail, setMail] = useState()
+  const [emailId, setEmailId] = useState()
   const navigate = useNavigate()
-  const [showAlert, setShowAlert] = useState(false) 
-  const[noAccountAlert, setNoAccountAlert] = useState(false)
+  const [showAlert, setShowAlert] = useState(false)
+  const [loggedIn, setLoggedIn] = useState(true)
+  const [noAccountAlert, setNoAccountAlert] = useState(false)
 
   const handleShowAlert = () => {
     setShowAlert(true)
@@ -69,21 +81,22 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    Axios.post('http://localhost:3001/login', {
-      mail,
+    Axios.post('http://localhost:8081/authenticate', {
+      emailId,
       password,
     })
       .then((result) => {
         console.log(result)
-        if (result.data === 'Success') {
+        if (result.status === 200) {
+          sessionStorage.setItem('token', result.data.token)
           handleShowAlert()
+
           setTimeout(() => {
             navigate('/')
           }, 3000)
         }
       })
       .catch((err) => NoAccountAlert())
-
   }
 
   return (
@@ -93,7 +106,7 @@ const Login = () => {
           DevHub Login
         </h1>
         <form onSubmit={handleSubmit} className="flex flex-col ">
-          <div className="form_mail flex ">
+          <div className="form_emailId flex ">
             {' '}
             <FontAwesomeIcon
               icon={faUser}
@@ -101,10 +114,10 @@ const Login = () => {
               style={{ scale: '1', transform: 'translateY(11.6px)' }}
             />
             <input
-              onChange={(event) => setMail(event.target.value)}
-              type="email"
-              id="email"
-              placeholder="Email"
+              onChange={(event) => setEmailId(event.target.value)}
+              type="emailId"
+              id="emailId"
+              placeholder="EmailId"
               className="w-full p-2 mb-4 border rounded"
             />
           </div>
@@ -140,7 +153,10 @@ const Login = () => {
         </form>
       </div>
       <AlertBox showAlert={showAlert} handleCloseAlert={handleCloseAlert} />
-      <AccountAlert noAccountAlert={noAccountAlert} handleCloseAlertAccount={handleCloseAlertAccount} />
+      <AccountAlert
+        noAccountAlert={noAccountAlert}
+        handleCloseAlertAccount={handleCloseAlertAccount}
+      />
     </div>
   )
 }
